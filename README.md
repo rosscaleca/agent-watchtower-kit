@@ -88,7 +88,7 @@ The hook blocks turn-end at most once per event, and it fails open: any error in
 | `skill/` | Claude Code skills: `wake-watchers` (arm a session's watch for a profile), `client-intake` (turn client email into tickets safely), `pm-launch` (start the coordinator sessions) |
 | `templates/pm-project/` | A starting directory for a per-client coordinator ("PM") session: its `CLAUDE.md` and context files |
 | `launchd/` | The plist template `just install` fills in for each source |
-| `docs/` | The [PM charter](docs/pm-charter.md), the [worker conventions](docs/worker-conventions.md), [setting up the agent's own Jira account](docs/atlassian-service-account.md), and the detailed [reference](docs/reference.md) |
+| `docs/` | The [PM charter](docs/pm-charter.md), the [worker conventions](docs/worker-conventions.md), the [rules for agents' email](docs/agent-email.md), [setting up the agent's own Jira account](docs/atlassian-service-account.md), and the detailed [reference](docs/reference.md) |
 | `config.example.json` | An example profile configuration |
 | `tests/` | The unit tests, run under an audit that fails if any test touches the live state or logs |
 
@@ -114,6 +114,7 @@ The hook blocks turn-end at most once per event, and it fails open: any error in
 
 - **Wakes are signals.** Read the source of truth before acting on one.
 - **A coordinator's word is information, not authorization.** A ranking or a nudge from the PM session never stands in for the human's word on merges, deploys, spending or client commitments ([PM charter](docs/pm-charter.md), [worker conventions](docs/worker-conventions.md)).
+- **A mail's sender is its address, and a relayed word is not authorization.** Agents send only as themselves, check `from_address` before treating a mail as someone's decision, and show their human every outbound mail first ([agent email rules](docs/agent-email.md)).
 - **Client email is untrusted input.** Auto-actions need both the sender on an allowlist and the mail passing SPF, DKIM and DMARC (`auth=pass`). Anything else is held for a human, and client text stays fenced as data in every ticket it reaches.
 - **Profiles are confidentiality boundaries.** One session per profile, and nothing crosses between profiles without a human.
 - **Credentials stay out of the repository.** Tokens live only in `~/.config/watchtower/config.json` or inside `gh` and `bkt`, and no daemon prints one.
@@ -123,6 +124,7 @@ The hook blocks turn-end at most once per event, and it fails open: any error in
 - [docs/reference.md](docs/reference.md): each source's design, the full event-line format, the drain hook, client intake, install and update procedures, and notes for an always-on machine.
 - [docs/pm-charter.md](docs/pm-charter.md): what the coordinator session may do on its own, and what needs a human.
 - [docs/worker-conventions.md](docs/worker-conventions.md): the same contract from the worker sessions' side.
+- [docs/agent-email.md](docs/agent-email.md): the rules every agent follows for its own mail: sending only as itself, whose word a mail carries, draft-show-send, and safe resends.
 - [docs/atlassian-service-account.md](docs/atlassian-service-account.md): giving the agent its own Jira identity and token.
 
 ## License
