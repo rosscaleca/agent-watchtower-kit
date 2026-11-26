@@ -124,3 +124,7 @@ The hook blocks turn-end at most once per event, and it fails open: any error in
 - [docs/pm-charter.md](docs/pm-charter.md): what the coordinator session may do on its own, and what needs a human.
 - [docs/worker-conventions.md](docs/worker-conventions.md): the same contract from the worker sessions' side.
 - [docs/atlassian-service-account.md](docs/atlassian-service-account.md): giving the agent its own Jira identity and token.
+
+## License
+
+MIT; see [LICENSE](LICENSE).
