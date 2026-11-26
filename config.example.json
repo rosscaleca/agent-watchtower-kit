@@ -1,0 +1,87 @@
+{
+  "_comment": "Copy to ~/.config/watchtower/config.json (chmod 600 \u2014 the Jira api_token lives here). Re-read every cycle; edits need no daemon restart. One profile per client/topic context; a session arms Monitors for exactly one profile's logs.",
+  "profiles": {
+    "acme": {
+      "github": {
+        "repos": [
+          "acme/app"
+        ],
+        "suppress_authors": [
+          "your-github-login"
+        ]
+      },
+      "jira": {
+        "site": "https://acme.atlassian.net",
+        "email": "you@example.com",
+        "api_token": "PASTE-TOKEN-HERE",
+        "projects": [
+          "ACME"
+        ],
+        "suppress_account_ids": [
+          "PASTE-YOUR-JIRA-ACCOUNT-ID-HERE"
+        ]
+      },
+      "bitbucket": {
+        "repos": [
+          "acme/service",
+          "acme/service-auth"
+        ],
+        "cwd": "~/Development/acme/service",
+        "suppress_user_ids": [
+          "{PASTE-YOUR-BITBUCKET-UUID-HERE}"
+        ],
+        "suppress_users": [
+          "Your Bitbucket Display Name"
+        ]
+      },
+      "inbox": {
+        "_comment": "Optional: an Inbox (agent mail) events API. Watches these Inbox ids for mail arrivals (id -> label). Org-scoped or inbox-scoped API key; PASTE parks the profile. Wake lines carry ids only (the events API exposes no from/subject; the woken session lists threads and reads). auth=FAIL means SPF/DKIM/DMARC did not all pass \u2014 intake holds those for a human.",
+        "api_url": "https://api.inbox.example",
+        "api_key": "PASTE-KEY-HERE",
+        "inboxes": {
+          "00000000-0000-0000-0000-000000000000": "pm-acme"
+        }
+      },
+      "stalled": {
+        "_comment": "Polls for the ABSENCE of change: open PRs with a standing verdict (GitHub reviewDecision APPROVED/CHANGES_REQUESTED, or a Bitbucket approval or changes-requested verdict), and Jira tickets in Review or In Progress (assigned or not), all idle for `days` days. Jira idleness follows status/assignee work-state history rather than bookkeeping updates; an Epic also includes direct-child work-state activity. Emits on entry, once per `reemit_hours` while it persists, and on clearing. Report-only; the seat decides. Repos, projects and credentials come from the blocks above. `pair_days` (default 14) is how far back merged PRs are read for `Lands-with:` trailers (the companion is a GitHub PR); a half-landed pair once found is tracked until its companion merges.",
+        "days": 3,
+        "reemit_hours": 24,
+        "pair_days": 14
+      },
+      "schedule": {
+        "_comment": "Machine-local times; at-most-once per day per name, catch-up on resume. What a named wake MEANS is the session playbook's business.",
+        "entries": [
+          {
+            "name": "morning-digest",
+            "at": "07:30",
+            "days": [
+              "mon",
+              "tue",
+              "wed",
+              "thu",
+              "fri"
+            ]
+          },
+          {
+            "name": "stale-sweep",
+            "at": "13:00"
+          }
+        ]
+      }
+    },
+    "globex": {
+      "_comment": "Skeleton second profile \u2014 fill repos to activate; a source key absent means that daemon skips this profile.",
+      "github": {
+        "repos": [],
+        "suppress_authors": [
+          "your-github-login"
+        ]
+      }
+    }
+  },
+  "watchdog": {
+    "_comment": "Meta-watcher thresholds: a configured source whose state watermark is older than stale_minutes gets an error: line in the affected profile's watchdog log. renotify_minutes also controls standing checkout-behind/diverged and stale fetch-bound reminders; all are re-notified at most once per window.",
+    "stale_minutes": 10,
+    "renotify_minutes": 60
+  }
+}
